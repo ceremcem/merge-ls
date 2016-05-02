@@ -1,0 +1,79 @@
+export function merge (obj1, ...sources)
+  for obj2 in sources
+    for p of obj2
+      try
+        throw if obj2[p] not instanceof Object
+        obj1[p] = obj1[p] `merge` obj2[p]
+      catch
+        obj1[p] = obj2[p]
+  obj1
+
+function pack x
+    JSON.stringify x
+
+tests =
+  * ->
+        # simple merge
+        a=
+          a: 1
+          b: 2
+          c:
+            ca: 1
+            cb: 2
+        b=
+          c:
+            cb: 5
+
+        expected =
+            a: 1
+            b: 2
+            c:
+                ca: 1
+                cb: 5
+
+        result = a `merge` b
+        {result, expected}
+  * ->
+        # delete
+        a=
+          a: 1
+          b: 2
+          c:
+            ca: 11
+            cb: 2
+
+        expected =
+            a: 1
+            b: 2
+
+        result = merge a, {c: void}
+        {result, expected}
+  * ->
+        # force overwrite
+        a=
+          a: 1
+          b: 2
+          c:
+            ca: 11
+            cb: 2
+        b=
+          c:  # do not merge, force overwrite
+            cb: 5
+
+        expected =
+            a: 1
+            b: 2
+            c:
+                cb: 5
+
+        result = merge a, {c: void}, b
+        {result, expected}
+
+try
+    console.log "Starting tests..."
+    for test in tests
+        {result, expected} = test!
+        throw if pack(result) isnt pack(expected)
+    console.log "Tests are OK..."
+catch
+    console.log "Test failed: ", e
