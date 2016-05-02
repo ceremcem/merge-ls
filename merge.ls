@@ -24,6 +24,8 @@ tests =
           c:
             cb: 5
 
+        result = a `merge` b
+
         expected =
             a: 1
             b: 2
@@ -31,7 +33,6 @@ tests =
                 ca: 1
                 cb: 5
 
-        result = a `merge` b
         {result, expected}
   * ->
         # delete
@@ -42,11 +43,12 @@ tests =
             ca: 11
             cb: 2
 
+        result = merge a, {c: void}
+
         expected =
             a: 1
             b: 2
 
-        result = merge a, {c: void}
         {result, expected}
   * ->
         # force overwrite
@@ -60,13 +62,14 @@ tests =
           c:  # do not merge, force overwrite
             cb: 5
 
+        result = merge a, {c: void}, b
+
         expected =
             a: 1
             b: 2
             c:
                 cb: 5
 
-        result = merge a, {c: void}, b
         {result, expected}
 
 try
