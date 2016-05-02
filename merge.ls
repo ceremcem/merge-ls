@@ -5,8 +5,12 @@ export function merge (obj1, ...sources)
         throw if obj2[p] not instanceof Object
         obj1[p] = obj1[p] `merge` obj2[p]
       catch
-        obj1[p] = obj2[p]
+        if obj2[p] isnt void
+            obj1[p] = obj2[p]
+        else
+            delete obj1[p]
   obj1
+
 
 function pack x
     JSON.stringify x
